@@ -1,0 +1,4 @@
+2025-06-10 23:37:45,685 - INFO - \U0001f50d Sistema de logs iniciado!
+2025-06-10 23:37:45,687 - INFO - \u2705 Backup realizado com sucesso!
+2025-06-10 23:37:45,688 - WARNING - \u26a0\ufe0f Arquivo JSON corrompido! Correção em andamento...
+2025-06-10 23:37:45,688 - ERROR - \u274c Falha na geração do gráfico PNG!

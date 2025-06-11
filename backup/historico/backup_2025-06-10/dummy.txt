@@ -1,0 +1,75 @@
+import os
+import json
+from datetime import datetime
+
+# Diretório dos relatórios
+reports_dir = "reports/historico/"
+
+# Obtém a data atual
+data_hoje = datetime.now().strftime("%Y-%m-%d")
+
+# Caminhos dos arquivos esperados
+json_path = os.path.join(reports_dir, f"{data_hoje}_resumo.json")
+txt_path = os.path.join(reports_dir, f"{data_hoje}_resumo.txt")
+png_path = os.path.join(reports_dir, f"{data_hoje}_grafico.png")
+
+# Função de diagnóstico
+def verificar_arquivos():
+    problemas = []
+
+    # Verifica JSON
+    if not os.path.exists(json_path):
+        problemas.append(f"Arquivo JSON ausente: {json_path}")
+    else:
+        with open(json_path, "r") as f:
+            data = json.load(f)
+            if not data or "saldo_final" not in data:
+                problemas.append("JSON encontrado, mas vazio ou inválido!")
+
+    # Verifica TXT
+    if not os.path.exists(txt_path):
+        problemas.append(f"Arquivo TXT ausente: {txt_path}")
+
+    # Verifica PNG
+    if not os.path.exists(png_path):
+        problemas.append(f"Gráfico PNG ausente: {png_path}")
+
+    return problemas
+
+# Executa diagnóstico
+problemas_encontrados = verificar_arquivos()
+
+if problemas_encontrados:
+    print("⚠️ Problemas detectados! ⚠️")
+    for problema in problemas_encontrados:
+        print(f"- {problema}")
+
+    print("\n🔧 Iniciando reparo automático...")
+    
+    # Recria JSON se estiver ausente ou inválido
+    if not os.path.exists(json_path) or "saldo_final" not in json.load(open(json_path, "r")):
+        relatorio_padrao = {
+            "data": data_hoje,
+            "sinais_processados": 0,
+            "lucro_total": 0,
+            "saldo_final": 500,  # Definindo um saldo inicial padrão
+            "projecao_10k_dias": "∞",
+            "projecao_100k_dias": "∞",
+            "projecao_1m_dias": "∞"
+        }
+        with open(json_path, "w") as f:
+            json.dump(relatorio_padrao, f, indent=4)
+        print("✅ Relatório JSON reparado!")
+
+    # Recria TXT se estiver ausente
+    if not os.path.exists(txt_path):
+        with open(txt_path, "w") as f:
+            f.write("Relatório diário não gerado corretamente. Reparo em andamento...\n")
+        print("✅ Relatório TXT reparado!")
+
+    # Notifica sobre PNG ausente (não pode ser recriado sem rodar `relatorio_historico.py`)
+    if not os.path.exists(png_path):
+        print("⚠️ O gráfico PNG precisa ser gerado rodando `relatorio_historico.py` novamente!")
+
+else:
+    print("✅ Todos os arquivos estão corretos! 🚀")
